@@ -79,6 +79,12 @@ def testing():
     return jsonify(json_shows(shows))
 
 
+@app.route("/upload", methods=['POST'])
+def upload():
+    file = request.files['file']
+    pprint("SOY EL FILE", file)
+
+
 @app.route("/login", methods=['POST'], strict_slashes=False)
 def login():
     """
@@ -300,7 +306,8 @@ def shows_test():
 def create_show():
     if request.method == 'POST':
         print(request.json)
-        show_attributes = ["description_show", "price_ticket", "name_show", "hour", "date"]
+        show_attributes = ["description_show",
+                           "price_ticket", "name_show", "hour", "date"]
         artist_attributes = ["genre_artist", "artist_name"]
         venue_attributes = ["venue_name", "address", "city", "description"]
         show_data = {}
@@ -313,10 +320,12 @@ def create_show():
             if key in artist_attributes:
                 artist_data[key] = value
             if key in venue_attributes:
-                 venue_data[key] = value
+                venue_data[key] = value
         user_id = request.cookies.get('userID')
-        organizer = storage.session.query(Organizer).filter_by(id=user_id).first()
-        city = storage.session.query(City).filter_by(city_name=venue_data["city"]).first()
+        organizer = storage.session.query(
+            Organizer).filter_by(id=user_id).first()
+        city = storage.session.query(City).filter_by(
+            city_name=venue_data["city"]).first()
         venue_data["city_id"] = city.id
         del venue_data["city"]
         venue = organizer.create_venue(venue_data)

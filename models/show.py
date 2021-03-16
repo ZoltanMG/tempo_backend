@@ -31,6 +31,7 @@ class Show(BaseModel, Base):
     # artist_id = Column(String(300), ForeignKey(
     #     'artists.id'), nullable=False)
     name_show = Column(String(60), nullable=True)
+    description_show = Column(String(500), nullable=False)
     status_show = Column(String(60), nullable=False)
     price_ticket = Column(String(250), nullable=False)
     # verificar a cambiar por tipo de dato DATETIME

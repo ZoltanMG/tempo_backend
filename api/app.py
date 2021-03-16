@@ -299,7 +299,42 @@ def shows_test():
 @app.route('/create-show', methods=['POST'])
 def create_show():
     if request.method == 'POST':
-        pprint(request.json)
+        print(request.json)
+        show_attributes = ["description_show", "price_ticket", "name_show", "hour", "date"]
+        artist_attributes = ["genre_artist", "artist_name"]
+        venue_attributes = ["venue_name", "address", "city", "description"]
+        show_data = {}
+        artist_data = {}
+        venue_data = {}
+        all_data = request.json['data']
+        for key, value in all_data.items():
+            if key in show_attributes:
+                show_data[key] = value
+            if key in artist_attributes:
+                artist_data[key] = value
+            if key in venue_attributes:
+                 venue_data[key] = value
+        user_id = request.cookies.get('userID')
+        organizer = storage.session.query(Organizer).filter_by(id=user_id).first()
+        city = storage.session.query(City).filter_by(city_name=venue_data["city"]).first()
+        venue_data["city_id"] = city.id
+        del venue_data["city"]
+        venue = organizer.create_venue(venue_data)
+        artist = organizer.create_artist(artist_data)
+        date_str = show_data["date"]
+        year = int(date_str[0:4])
+        month = int(date_str[5:7])
+        day = int(date_str[8:10])
+        date = datetime.datetime(year, month, day, 0, 0, 0)
+        show_data["date"] = date
+        show_data["venue_id"] = venue.id
+        show_data["status_show"] = "Confirmado"
+        show = organizer.create_show(show_data)
+        show_artist = ShowArtist(
+            artist_id=artist.id,
+            show_id=show.id
+        )
+        show_artist.save()
         return jsonify({"status": "OK"})
     return jsonify({"error": True})
 

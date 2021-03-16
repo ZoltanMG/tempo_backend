@@ -152,6 +152,7 @@ show = {
     "price_ticket": "$250.000",
     "date": date,
     "hour": "8:00 pm",
+    "description_show": "test descripcion shows",
     "venue_id": venue_objeto.id,
 }
 show_objeto = organizer2.create_show(show)
@@ -169,6 +170,7 @@ show5 = {
     "price_ticket": "$250.000",
     "date": date5,
     "hour": "8:00 pm",
+    "description_show": "test descripcion shows",
     "venue_id": venue_objeto.id,
 }
 show_objeto5 = organizer2.create_show(show5)
@@ -186,6 +188,7 @@ show2 = {
     "price_ticket": "$400.000",
     "date": date2,
     "hour": "11:00 pm",
+    "description_show": "test descripcion shows",
     "venue_id": venue_objeto2.id,
 }
 show_objeto2 = organizer.create_show(show2)
@@ -203,6 +206,7 @@ show3 = {
     "price_ticket": "$100.000",
     "date": date3,
     "hour": "12:00 am",
+    "description_show": "test descripcion shows",
     "venue_id": venue_objeto3.id,
 }
 show_objeto3 = organizer.create_show(show3)
@@ -219,6 +223,7 @@ show4 = {
     "price_ticket": "$300.000",
     "date": date4,
     "hour": "2:00 pm",
+    "description_show": "test descripcion shows",
     "venue_id": venue_objeto2.id,
 }
 show_objeto4 = organizer2.create_show(show4)

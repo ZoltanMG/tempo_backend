@@ -41,6 +41,7 @@ class DBStorage:
         if TEMPO_ENV == "test":
             Base.metadata.drop_all(self.__engine)
 
+        print(TEMPO_MYSQL_HOST)
     def all(self, cls=None):
         """query on the current database session"""
         new_dict = {}

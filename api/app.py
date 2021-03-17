@@ -29,38 +29,13 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-
-@login_manager.user_loader
-def load_user(user_id):
-    return storage.session.query(Organizer).get(user_id)
-
-
-@app.before_request
-def before():
-    #print('before request =>{}'.format(session))
-    if "userId" in session:
-        g.user = session["userId"]
-        # print(g.user)
-    else:
-        g.user = None
-
-
-@app.after_request
-def after(response):
-    # print('after request>>> {}'.format(session))
-    response.headers["Access-Control-Allow-Origin"] = "http://localhost:3000"
-    response.headers["Access-Control-Allow-Credentials"] = "true"
-    response.headers["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS, PUT, DELETE"
-    response.headers["Access-Control-Allow-Headers"] = "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization"
-    return(response)
-
+##### functions #####
 
 def json_shows(shows):
     """
     ESTA FUNCION OBTIENE LOS SHOWS COMO OBJETOS(ARTISTAS, VENUES, SHOW) Y RETORNA UNA LISTA DE ELLOS
     """
     shows_finales = []
-    listas_artistas = []
     show_unico = []
     for show in shows:
         show_unico.append(show.to_dict())
@@ -72,11 +47,73 @@ def json_shows(shows):
         show_unico = []
     return shows_finales
 
+def profile_json(user_id):
+    organizer_dict = {}
+    organizer = storage.session.query(Organizer).filter_by(id=user_id).first()
+    copy_dict_organizer = organizer.to_dict().copy()
+    if "pwd" in copy_dict_organizer:
+        copy_dict_organizer.pop('pwd', None)
+    organizer_dict["organizador"] = [copy_dict_organizer, [venue.to_dict()
+                                                           for venue in organizer.venues]]
+    organizer_dict["shows"] = json_shows(organizer.shows)
+    return (organizer_dict)
 
-@app.route("/test-shows")
-def testing():
-    shows = storage.session.query(Show).all()
-    return jsonify(json_shows(shows))
+def filter_by_date(shows, dates):
+    # variable seven para almacenar el datetime para los rangos
+    filter_shows = []
+    today_str = datetime.date.today().isoformat()
+    today = datetime.datetime.strptime(today_str, "%Y-%m-%d")
+    seven_days = today + datetime.timedelta(days=7)
+    fifteen_days = today + datetime.timedelta(days=15)
+    one_month = today + datetime.timedelta(days=30)
+    three_month = today + datetime.timedelta(days=90)
+    if dates == "Hoy":
+        for show in shows:
+            if show.to_dict()["date"] == today:
+                filter_shows.append(show)
+    elif dates == "Próximos 7 días":
+        for show in shows:
+            if show.to_dict()["date"] >= today and show.to_dict()["date"] <= seven_days:
+                filter_shows.append(show)
+    elif dates == "próximos 15 días":
+        for show in shows:
+            if show.to_dict()["date"] >= today and show.to_dict()["date"] <= fifteen_days:
+                filter_shows.append(show)
+    elif dates == "Próximo mes":
+        for show in shows:
+            if show.to_dict()["date"] >= today and show.to_dict()["date"] <= one_month:
+                filter_shows.append(show)
+    elif dates == "próximos 3 meces":
+        for show in shows:
+            if show.to_dict()["date"] >= today and show.to_dict()["date"] <= three_month:
+                filter_shows.append(show)
+    elif dates == "Todos":
+        for show in shows:
+            filter_shows.append(show)
+    return filter_shows
+
+##### endpoints #####
+
+@login_manager.user_loader
+def load_user(user_id):
+    return storage.session.query(Organizer).get(user_id)
+
+
+@app.before_request
+def before():
+    if "userId" in session:
+        g.user = session["userId"]
+    else:
+        g.user = None
+
+
+@app.after_request
+def after(response):
+    response.headers["Access-Control-Allow-Origin"] = "http://localhost:3000"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    response.headers["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS, PUT, DELETE"
+    response.headers["Access-Control-Allow-Headers"] = "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization"
+    return(response)
 
 
 @app.route("/login", methods=['POST'], strict_slashes=False)
@@ -150,29 +187,15 @@ def logout():
     return redirect(url_for("login"))
 
 
-def profile_json(user_id):
-    organizer_dict = {}
-    organizer = storage.session.query(Organizer).filter_by(id=user_id).first()
-    copy_dict_organizer = organizer.to_dict().copy()
-    if "pwd" in copy_dict_organizer:
-        copy_dict_organizer.pop('pwd', None)
-    organizer_dict["organizador"] = [copy_dict_organizer, [venue.to_dict()
-                                                           for venue in organizer.venues]]
-    organizer_dict["shows"] = json_shows(organizer.shows)
-    return (organizer_dict)
-
-
 @app.route("/profile", methods=['GET', 'POST'], strict_slashes=False)
 def profile():
     user_id = request.cookies.get('userID')
     info_organizer = profile_json(user_id)
     info_org = info_organizer["organizador"][0]
-    # pprint(info_org)
     return jsonify(info_organizer)
 
 
 @app.route("/change_pwd", methods=['GET', 'POST'], strict_slashes=False)
-@login_required
 def change_pwd():
     orgId = session['userId']
     if request.method == 'POST':
@@ -198,108 +221,19 @@ def shows():
     return jsonify(listShows), 200
 
 
-def filter_by_date(shows, dates):
-    # variable seven para almacenar el datetime para los rangos
-    filter_shows = []
-    today_str = datetime.date.today().isoformat()
-    today = datetime.datetime.strptime(today_str, "%Y-%m-%d")
-    seven_days = today + datetime.timedelta(days=7)
-    fifteen_days = today + datetime.timedelta(days=15)
-    one_month = today + datetime.timedelta(days=30)
-    three_month = today + datetime.timedelta(days=90)
-    if dates == "Hoy":
-        for show in shows:
-            if show.to_dict()["date"] == today:
-                filter_shows.append(show)
-    elif dates == "Próximos 7 días":
-        for show in shows:
-            if show.to_dict()["date"] >= today and show.to_dict()["date"] <= seven_days:
-                filter_shows.append(show)
-    elif dates == "próximos 15 días":
-        for show in shows:
-            if show.to_dict()["date"] >= today and show.to_dict()["date"] <= fifteen_days:
-                filter_shows.append(show)
-    elif dates == "Próximo mes":
-        for show in shows:
-            if show.to_dict()["date"] >= today and show.to_dict()["date"] <= one_month:
-                filter_shows.append(show)
-    elif dates == "próximos 3 meces":
-        for show in shows:
-            if show.to_dict()["date"] >= today and show.to_dict()["date"] <= three_month:
-                filter_shows.append(show)
-    elif dates == "Todos":
-        for show in shows:
-            filter_shows.append(show)
-    return filter_shows
-
-
 @app.route("/", methods=["GET"])
 def index():
     if request.method == "GET":
         all_shows = storage.session.query(Show).all()
         filter_shows = filter_by_date(all_shows, "Próximo mes")
-        # pprint(filter_shows)
         shows = json_shows(filter_shows)
         return jsonify(shows), 200
     return jsonify({"status": "metodo no permitido"}), 405
 
 
-@app.route("/filter", methods=['POST'], strict_slashes=False)
-def filter():
-    """
-    Punto de entrada filter():
-        método : [POST]
-            - tomará un objeto request.json["objeto"]
-        >>> Esta función filter() se encargará de hacer lo siguiente:
-            - city : obtiene la primera ciudad por nombre a partir del request.json["city"]
-            - venues : obtiene una lista de los venues que coincidan con la city.id
-            - all_shows : lista que contiene todos los shows coincidentes con el city_name dado
-            - all_artists : lista que contiene todos los artistas relacionados a un show
-            - shows_by_genre : lista que contiene todos los shows clasificados por género del artista
-            - unique_shows : lista que contiene los shows sin repetir (únicos)
-        >>> Return(jsonify(request.json)) objeto que contiene la información del filtro dado por el usuario
-        >>> status del POST: 200 OK
-    """
-    city = storage.session.query(City).filter_by(
-        city_name=request.json["city"]).first()
-    venues = storage.session.query(
-        Venue).filter_by(city_id=city.id).all()
-    all_shows = []
-    for venue in venues:
-        all_shows += venue.shows
-    all_artists = []
-    for show in all_shows:
-        all_artists += show.artists()
-    shows_by_genre = []
-    if request.json["genre"] != "Todos":
-        for artist in all_artists:
-            if artist.genre_artist == request.json["genre"]:
-                shows_by_genre += artist.shows()
-    else:
-        for artist in all_artists:
-            shows_by_genre += artist.shows()
-    unique_shows = []
-    for show in shows_by_genre:
-        if show not in unique_shows:
-            unique_shows.append(show)
-    shows = filter_by_date(unique_shows, request.json["date"])
-    return jsonify(shows), 200
-
-
-@app.route("/shows_test", methods=['GET', 'POST'], strict_slashes=False)
-def shows_test():
-    shows = storage.session.query(Show).all()
-    list_shows = []
-    for show in shows:
-        list_shows.append(show.to_dict())
-    json_shows = json.dumps(list_shows)
-    return json_shows
-
-
 @app.route('/create-show', methods=['POST'])
 def create_show():
     if request.method == 'POST':
-        print(request.json)
         show_attributes = ["description_show", "price_ticket", "name_show", "hour", "date"]
         artist_attributes = ["genre_artist", "artist_name"]
         venue_attributes = ["venue_name", "address", "city", "description"]
@@ -337,56 +271,6 @@ def create_show():
         show_artist.save()
         return jsonify({"status": "OK"})
     return jsonify({"error": True})
-
-
-@app.route('/create_venue', methods=['GET', 'POST'])
-@login_required
-def create_venue():
-    orgId = session['userId']
-    cities = storage.session.query(City).all()
-    if request.method == 'POST':
-        organizer = storage.session.query(
-            Organizer).filter_by(id=orgId).first()
-        city = storage.session.query(
-            City).filter_by(city_name=request.form['city_name']).first()
-        copyDict = {}
-        for key, value in request.form.items():
-            copyDict[key] = value
-        copyDict['city_id'] = city.id
-        newVenue = organizer.create_venue(copyDict)
-        return redirect(url_for('profile'))
-    return render_template('create_venue.html', cities=cities)
-
-
-@app.route("/profile_test", methods=['GET'], strict_slashes=False)
-def register_test():
-    dict_profile = {"profile": {
-        "organizer": {
-            "created_at": "2021-03-08T21:04:22",
-            "email": "rock_4@alparque.com",
-            "id": "528e4eb2-7b49-447d-a6db-5fed80be7d9a",
-            "image_name": "imh.jpg",
-            "names_organizer": "Rock al Parque",
-            "updated_at": "2021-03-08T21:04:22"
-        }
-    }
-    }
-    return jsonify(dict_profile)
-
-# @app.route("/profile_test", methods=['GET'], strict_slashes=False)
-# def register_test():
-#     dict_profile = {"profile": {
-#         "organizer": {
-#             "created_at": "2021-03-08T21:04:22",
-#             "email": "rock_4@alparque.com",
-#             "id": "528e4eb2-7b49-447d-a6db-5fed80be7d9a",
-#             "image_name": "imh.jpg",
-#             "names_organizer": "Rock al Parque",
-#             "updated_at": "2021-03-08T21:04:22"
-#             }
-#         }
-#     }
-#     return jsonify(dict_profile)
 
 
 if __name__ == "__main__":

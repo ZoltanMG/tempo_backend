@@ -1,3 +1,0 @@
-#!/usr/bin/bash
-
-./drop_db root tempo_db; cat setup_mysql_dev.sql | sudo mysql -u root -p;  TEMPO_MYSQL_USER=tempo_dev TEMPO_MYSQL_PWD=Tempo_pwd_2001 TEMPO_MYSQL_HOST=localhost TEMPO_MYSQL_DB=tempo_db HBNB_TYPE_STORAGE=db ./create_cities.py; TEMPO_MYSQL_USER=tempo_dev TEMPO_MYSQL_PWD=Tempo_pwd_2001 TEMPO_MYSQL_HOST=localhost TEMPO_MYSQL_DB=tempo_db HBNB_TYPE_STORAGE=db ./crear_objetos.py

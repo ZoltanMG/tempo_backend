@@ -1,3 +1,4 @@
+# imports the require libraries
 import models
 from models.base_model import BaseModel, Base
 from os import getenv
@@ -9,7 +10,10 @@ from sqlalchemy import ForeignKey
 
 class SocialOrganizer(BaseModel, Base):
     """
-    class Social
+    class SocialOrganizer:
+        - organizer_id : contains the id if the organizer
+        - link: the url of the social newtwork
+        - description: descripton of the url social
     """
     __tablename__ = 'social_organizer'
     organizer_id = Column(String(60), ForeignKey(

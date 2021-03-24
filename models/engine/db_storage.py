@@ -1,8 +1,10 @@
 #!/usr/bin/python3
+
 """
 Contains the class DBStorage
 """
 
+# import the require libraries
 import models
 from models.artist import Artist
 from models.base_model import BaseModel, Base
@@ -17,17 +19,20 @@ import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
+
+# create a dictionary wiht all keys of the require tables in the DB
 classes = {"Artist": Artist, "City": City,
            "Organizer": Organizer, "Show": Show, "Venue": Venue, "SocialArtist": SocialArtist, "SocialOrganizer": SocialOrganizer, "ShowArtist": ShowArtist}
 
 
 class DBStorage:
-    """interaacts with the MySQL database"""
+    """interacts with the MySQL database"""
     __engine = None
     session = None
 
     def __init__(self):
         """Instantiate a DBStorage object"""
+        # create the env vars and get the value of them
         TEMPO_MYSQL_USER = getenv('TEMPO_MYSQL_USER')
         TEMPO_MYSQL_PWD = getenv('TEMPO_MYSQL_PWD')
         TEMPO_MYSQL_HOST = getenv('TEMPO_MYSQL_HOST')
@@ -44,6 +49,8 @@ class DBStorage:
     def all(self, cls=None):
         """query on the current database session"""
         new_dict = {}
+        # gets the class wiht a key : classname.id
+        # and as value the object wiht all infomraiton about this class
         for clss in classes:
             if cls is None or cls is classes[clss] or cls is clss:
                 objs = self.session.query(classes[clss]).all()
@@ -54,19 +61,23 @@ class DBStorage:
 
     def new(self, obj):
         """add the object to the current database session"""
+        # add a new object to db
         self.session.add(obj)
 
     def save(self):
         """commit all changes of the current database session"""
+        # save and push the object to a db
         self.session.commit()
 
     def delete(self, obj=None):
         """delete from the current database session obj if not None"""
+        # deletes a object
         if obj is not None:
             self.session.delete(obj)
 
     def reload(self):
         """reloads data from the database"""
+        # create all tables into a db tempo
         Base.metadata.create_all(self.__engine)
         sess_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(sess_factory)
@@ -81,14 +92,14 @@ class DBStorage:
         Returns the object based on the class name and its ID, or
         None if not found
         """
+        # verify if the cls exists
         if cls not in classes.values():
             return None
-
+        # get all classes
         all_cls = models.storage.all(cls)
         for value in all_cls.values():
             if (value.id == id):
                 return value
-
         return None
 
     def count(self, cls=None):
@@ -96,12 +107,10 @@ class DBStorage:
         count the number of objects in storage
         """
         all_class = classes.values()
-
         if not cls:
             count = 0
             for clas in all_class:
                 count += len(models.storage.all(clas).values())
         else:
             count = len(models.storage.all(cls).values())
-
         return count

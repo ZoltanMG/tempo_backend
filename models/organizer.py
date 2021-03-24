@@ -1,3 +1,4 @@
+# imports the require libraries
 import models
 from models.base_model import BaseModel, Base
 from models.venue import Venue
@@ -15,8 +16,14 @@ from flask_login import UserMixin
 class Organizer(UserMixin, BaseModel, Base):
     """
     class Organizer:
-        - username: username login
-
+        - email: will be the email of the user
+        - pwd: will be the password of the user
+        - image_name: the image name of the organizer
+        - shows : relation between table Show
+        - venues: relation between table Venue
+        - artist: relation between table Artist
+        - social: relation between table SocialOrganizer
+        - names_organizer: will be the name of the organizer
     """
     __tablename__ = 'organizers'
     email = Column(String(60), nullable=False)
@@ -39,45 +46,60 @@ class Organizer(UserMixin, BaseModel, Base):
 
     def create_show(self, *args, **kwargs):
         """Create show for organizer"""
+        # takes the id of the organizer
         args[0]["organizer_id"] = self.id
+        # create an instance of the class Show()
         show = Show()
         for key, value in args[0].items():
+            # set each value in the dictionary
             setattr(show, key, value)
         try:
+            # save the show object into a db
             show.save()
             return show
         except exc.IntegrityError as e:
-            print("show")
             errorInfo = e.orig.args
-            print(errorInfo[0])  # This will give you error code
-            print(errorInfo[1])  # This will give you error message
+            # This will give you error code
+            print(errorInfo[0])
+            # This will give you error message
+            print(errorInfo[1])
 
     def create_venue(self, *args, **kwargs):
         """Create venue for Organizer"""
+        # takes the id of the organizer
         args[0]["organizer_id"] = self.id
+        # create an instance of the class Venue()
         venue = Venue()
         for key, value in args[0].items():
+            # set each value in the dict
             setattr(venue, key, value)
         try:
+            # save the venues object into a db
             venue.save()
             return venue
         except exc.IntegrityError as e:
-            print("venue")
             errorInfo = e.orig.args
-            print(errorInfo[0])  # This will give you error code
-            print(errorInfo[1])  # This will give you error message
+            # This will give you error code
+            print(errorInfo[0])
+            # This will give you error message
+            print(errorInfo[1])
 
     def create_artist(self, *args, **kwargs):
         """Create artits for Organizer"""
+        # takes the id of the organizer
         args[0]["organizer_id"] = self.id
+        # create an instance of the class Artist()
         artist = Artist()
         for key, value in args[0].items():
             setattr(artist, key, value)
         try:
+            # save the artist into a db
             artist.save()
             return artist
         except exc.IntegrityError as e:
             print("artist")
             errorInfo = e.orig.args
-            print(errorInfo[0])  # This will give you error code
-            print(errorInfo[1])  # This will give you error message
+            # This will give you error code
+            print(errorInfo[0])
+            # This will give you error message
+            print(errorInfo[1])

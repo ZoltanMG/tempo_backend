@@ -1,7 +1,0 @@
-#!/usr/bin/ env bash
-
-# script that delete the db
-DB="$1"
-USER="$2"
-echo "DROP DATABASE $2" | sudo mysql -u $1 -p
-

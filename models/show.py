@@ -1,3 +1,4 @@
+# imports the require libraries
 import models
 import datetime
 from models.base_model import BaseModel, Base
@@ -8,11 +9,13 @@ from sqlalchemy.orm import relationship
 from sqlalchemy import ForeignKey
 
 
-"""Representation of Show """
-
-
 class ShowArtist(BaseModel, Base):
-
+    """
+    This class contains the items as follows:
+        - artist_id: the id of the artist
+        - show_id : the id of the show
+        - artists : the relation between the table Artist
+    """
     __tablename__ = 'shows_artists'
     artist_id = Column(String(60), ForeignKey(
         'artists.id'), nullable=True)
@@ -26,15 +29,24 @@ class ShowArtist(BaseModel, Base):
 
 
 class Show(BaseModel, Base):
-    """Representation of Show """
+    """
+    This class contains the items as follows:
+        - name_show: the id of the artist
+        - description_show : the id of the show
+        - status_show : the relation between the table Artist
+        - price_ticket : the price of the tocket show
+        - date: date of the show
+        - hour: hour of the show
+        - image_name: nam image of the show
+        - venue_id: the id of the venue relation
+        - organizer_di: the id of the organizer relation
+        - show_artists: relation between ShowArtist
+    """
     __tablename__ = 'shows'
-    # artist_id = Column(String(300), ForeignKey(
-    #     'artists.id'), nullable=False)
     name_show = Column(String(60), nullable=True)
     description_show = Column(String(500), nullable=False)
     status_show = Column(String(60), nullable=False)
     price_ticket = Column(String(250), nullable=False)
-    # verificar a cambiar por tipo de dato DATETIME
     date = Column(DateTime, nullable=False)
     hour = Column(String(60), nullable=False)
     image_name = Column(String(255), nullable=True)
@@ -42,17 +54,18 @@ class Show(BaseModel, Base):
     organizer_id = Column(String(60), ForeignKey(
         'organizers.id'), nullable=False)
     show_artists = relationship("ShowArtist", backref="show")
-    # (id=show.venue_id)
 
     def artists(self):
         """
-        TRAER TODOS LOS ARTISTAS DE UN SHOW
+        takes all the artists of a show
         """
         from models.artist import Artist
+        # filter by show id
         showArtists = models.storage.session.query(
             ShowArtist).filter_by(show_id=self.id).all()
         listArtists = []
         for sa in showArtists:
+            # push the id of the artist into a list
             listArtists.append(sa.artist_id)
         artistas = []
         for artista in listArtists:

@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-SCRIPT QUE INCIALIZA CON FAKE DATA NUESTRA DB DE TEMPO
+script that starts dummy data into a db tempo
 """
 import datetime
 from models import storage
@@ -18,14 +18,14 @@ bogota = storage.session.query(City).filter_by(city_name="Bogotá").first()
 medellin = storage.session.query(City).filter_by(city_name="Medellín").first()
 
 
-# Organizador
+# Organizer
 pwd = 'pwd'
 pwd_md5 = generate_password_hash(pwd)
 organizer = Organizer(names_organizer="Rock al Parque",
                       email="rock_4@alparque.com", pwd=pwd_md5)
 organizer.save()
 
-# Redes Sociales Organizador
+#  Social newtwork organizer
 social_organizer = SocialOrganizer(
     organizer_id=organizer.id,
     link="facebook.com/rock-al-parque",
@@ -33,14 +33,14 @@ social_organizer = SocialOrganizer(
 )
 social_organizer.save()
 
-# Organizador2
+# Organizer2
 pwd2 = 'pwd2'
 pwd_md5 = generate_password_hash(pwd2)
 organizer2 = Organizer(names_organizer="Bar quilla",
                        email="rock_2@alparque.com", pwd=pwd_md5)
 organizer2.save()
 
-# Redes Sociales Organizador2
+# Social newtwork organizer2
 social_organizer2 = SocialOrganizer(
     organizer_id=organizer2.id,
     link="facebook.com/rock2-al-parque",
@@ -49,10 +49,9 @@ social_organizer2 = SocialOrganizer(
 social_organizer2.save()
 
 
-# Lugares
+# Venues
 venue = {
     "city_id": bogota.id,
-    # "organizer_id": organizer.id,
     "venue_name": "LOS OCARROS",
     "address": "Calle del cartucho",
     "phone": "23555",
@@ -88,7 +87,7 @@ venue3 = {
 }
 venue_objeto3 = organizer.create_venue(venue3)
 
-# Artistas
+# Artists
 artista = {
     "artist_name": "tigres del norte",
     "genre_artist": "Norteña"
@@ -100,7 +99,6 @@ artista2 = {
     "genre_artist": "Metal"
 }
 artista_objeto2 = organizer.create_artist(artista2)
-#print(f"METAL  ARTISTA    ---->{artista_objeto2}")
 
 
 artista3 = {
@@ -116,7 +114,7 @@ artista4 = {
 }
 artista_objeto4 = organizer.create_artist(artista4)
 
-# Redes Sociales Artista
+# Social newtwork artist
 social = SocialArtist(
     artist_id=artista_objeto.id,
     link="facebook.com/los-tigres-del-norte",
@@ -138,7 +136,7 @@ social3 = SocialArtist(
 )
 social3.save()
 
-# Fechas
+# Dates
 date_str = "2021-04-12"
 year = int(date_str[0:4])
 month = int(date_str[5:7])
@@ -157,7 +155,6 @@ show = {
 }
 show_objeto = organizer2.create_show(show)
 
-# fecah show # 5
 date_str = "2021-03-09"
 year = int(date_str[0:4])
 month = int(date_str[5:7])
@@ -228,7 +225,7 @@ show4 = {
 }
 show_objeto4 = organizer2.create_show(show4)
 
-# ShowArtist union artista y shows
+# ShowArtist joins artists and shows
 show_artist = ShowArtist(
     artist_id=artista_objeto.id,
     show_id=show_objeto.id

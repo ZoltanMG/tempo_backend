@@ -1,3 +1,4 @@
+# imports the require libraries
 import models
 from models.base_model import BaseModel, Base
 from os import getenv
@@ -19,7 +20,7 @@ class Venue(BaseModel, Base):
         - capacity: the number max of people by bar
         - latitude: the latitude of the bar
         - longitude: the longitude of the bar
-        - description: description of the bar 
+        - description: description of the bar
     """
     __tablename__ = 'venues'
     city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
@@ -28,11 +29,6 @@ class Venue(BaseModel, Base):
     venue_name = Column(String(60), nullable=False)
     image_name = Column(String(255), nullable=True)
     address = Column(String(60), nullable=False)
-    #phone = Column(String(60), nullable=False)
-    # social = Column(String(60), nullable=True)
-    # capacity = Column(String(80), nullable=False)
-    # latitude = Column(String(60), nullable=True)
-    # longitude = Column(String(60), nullable=True)
     description = Column(String(250), nullable=True)
     shows = relationship("Show", backref="venue",
                          cascade="all, delete, delete-orphan")

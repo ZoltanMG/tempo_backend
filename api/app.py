@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+
+# imports the require libraries
 from flask import Flask
 from models.base_model import Base
 from models.organizer import Organizer
@@ -18,23 +20,26 @@ from models.social_organizer import SocialOrganizer
 from models.artist import Artist
 from pprint import pprint
 from flask_cors import CORS
-"""
-Create endpoints for the api
-"""
 
+# Create endpoints for the api tempo
+
+# app will be the instance of Flask
 app = Flask(__name__)
+# Call the CORS libarry of Flask
 CORS(app)
+# To manage session we use a secret key (random)
 app.secret_key = os.urandom(16)
+# login_manager contains all methods of the class LoginManager
 login_manager = LoginManager()
+# starts the LoginManager in this app Flask
 login_manager.init_app(app)
+# By default the view if a user is not login will be the login
 login_manager.login_view = 'login'
 
-##### functions #####
 
 def json_shows(shows):
-    """
-    ESTA FUNCION OBTIENE LOS SHOWS COMO OBJETOS(ARTISTAS, VENUES, SHOW) Y RETORNA UNA LISTA DE ELLOS
-    """
+    # This function gets the shows as objects(artists, venues, shows)
+    # and returns a list of them
     shows_finales = []
     show_unico = []
     for show in shows:
@@ -47,7 +52,10 @@ def json_shows(shows):
         show_unico = []
     return shows_finales
 
+
 def profile_json(user_id):
+    # this function gets all information about organizer
+    #  and the shows of this organizer
     organizer_dict = {}
     organizer = storage.session.query(Organizer).filter_by(id=user_id).first()
     copy_dict_organizer = organizer.to_dict().copy()
@@ -58,8 +66,10 @@ def profile_json(user_id):
     organizer_dict["shows"] = json_shows(organizer.shows)
     return (organizer_dict)
 
+
 def filter_by_date(shows, dates):
-    # variable seven para almacenar el datetime para los rangos
+    # This function filter shows by date
+    # the shows for the next month
     filter_shows = []
     today_str = datetime.date.today().isoformat()
     today = datetime.datetime.strptime(today_str, "%Y-%m-%d")
@@ -67,40 +77,23 @@ def filter_by_date(shows, dates):
     fifteen_days = today + datetime.timedelta(days=15)
     one_month = today + datetime.timedelta(days=30)
     three_month = today + datetime.timedelta(days=90)
-    if dates == "Hoy":
-        for show in shows:
-            if show.to_dict()["date"] == today:
-                filter_shows.append(show)
-    elif dates == "Próximos 7 días":
-        for show in shows:
-            if show.to_dict()["date"] >= today and show.to_dict()["date"] <= seven_days:
-                filter_shows.append(show)
-    elif dates == "próximos 15 días":
-        for show in shows:
-            if show.to_dict()["date"] >= today and show.to_dict()["date"] <= fifteen_days:
-                filter_shows.append(show)
-    elif dates == "Próximo mes":
+    if dates == "Próximo mes":
         for show in shows:
             if show.to_dict()["date"] >= today and show.to_dict()["date"] <= one_month:
                 filter_shows.append(show)
-    elif dates == "próximos 3 meces":
-        for show in shows:
-            if show.to_dict()["date"] >= today and show.to_dict()["date"] <= three_month:
-                filter_shows.append(show)
-    elif dates == "Todos":
-        for show in shows:
-            filter_shows.append(show)
     return filter_shows
 
-##### endpoints #####
 
 @login_manager.user_loader
 def load_user(user_id):
+    # this function gets the id user that has an active session
     return storage.session.query(Organizer).get(user_id)
 
 
 @app.before_request
 def before():
+    # This function verifies the session before a request
+    # with the key userId (user id that has an active session)
     if "userId" in session:
         g.user = session["userId"]
     else:
@@ -109,6 +102,9 @@ def before():
 
 @app.after_request
 def after(response):
+    # This function verifies the session after a request
+    # and gives the CORS with the frontend
+    # allows the conncetion between the back and the front
     response.headers["Access-Control-Allow-Origin"] = "http://localhost:3000"
     response.headers["Access-Control-Allow-Credentials"] = "true"
     response.headers["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS, PUT, DELETE"
@@ -118,17 +114,16 @@ def after(response):
 
 @app.route("/login", methods=['POST'], strict_slashes=False)
 def login():
-    """
-    Este end-point validan el correo y contraseña de un usuario para
-    realizar un inicio de sesión exitoso.
-    Se busca un organizer filtrandolo por email, si no lo encuentra retorna un
-    json con estatus: “Email not found” y un código http 404.
-    Siguiente a eso usamos la función  check_password_hash() que compara la
-    contraseña ingresada con la registrada en la base de datos que está
-    encriptada con MD5, sí la función falla retorna un json con
-    status: “Invalid password” y un código http 401,
-    de ser exitoso retorna un json con status: “OK” y un código http 200.
-    """
+    # This end-point validate the email and password of an user for
+    # has a login successful, then finds the organizer by email
+    # if this is not found returns a json
+    # wiht status : “Email not found”  and a code http 404.
+    # In the next step, we use the function check_password_hash()
+    # That compares the password in the login wiht the registered
+    # in the DB that is encrypted with MD5, if the function fails
+    # returns a json  with status: “Invalid password” and a code http 401,
+    # and another way if was successful returns a json with status: “OK”
+    #  and a code http 200.
     if request.method == "POST":
         user = storage.session.query(Organizer).filter_by(
             email=request.json['email']).first()
@@ -148,14 +143,12 @@ def login():
 
 @app.route("/register", methods=['POST'], strict_slashes=False)
 def register():
-    """
-    En este end-point creamos un nuevo usuario de organizador.
-    Primero se valida si el correo enviado por el nuevo organizador
-    ya está en uso por otro organizador, de ser así se retorna un json con
-    status: “Email existent” y un código http 409, de lo contrario se crea un
-    nuevo organizador con los datos enviados en el formulario y se retorna un
-    json con status: “OK” y un código http 200.
-    """
+    # In this endpoint we create a new user of Organizer
+    # First this function validates if the email sent by the new organizer
+    # it's already in use by other organizer, in this case returns a json with
+    # status: “Email existent” and a code http 409, otherwise a new organizer
+    # is created with the data sent in the request form and returns a json with
+    # status: “OK” and a code http 200.
     data_json = request.json
     user_email = storage.session.query(Organizer).filter_by(
         email=data_json['email']).first()
@@ -179,43 +172,21 @@ def register():
     return jsonify(data_organizer), 200
 
 
-@app.route("/logout")
-@login_required
-def logout():
-    session.clear()
-    logout_user()
-    return redirect(url_for("login"))
-
-
 @app.route("/profile", methods=['GET', 'POST'], strict_slashes=False)
 def profile():
+    # This function gets a cookie and pass as argument
+    # in the function profile_json that have all information about
+    # of an organizer  ans returns a json with this information
     user_id = request.cookies.get('userID')
     info_organizer = profile_json(user_id)
     info_org = info_organizer["organizador"][0]
     return jsonify(info_organizer)
 
 
-@app.route("/change_pwd", methods=['GET', 'POST'], strict_slashes=False)
-def change_pwd():
-    orgId = session['userId']
-    if request.method == 'POST':
-        organizer = storage.session.query(
-            Organizer).filter_by(id=orgId).first()
-        if not check_password_hash(organizer.pwd, request.form['pwd']):
-            flash('La contraseña actual es incorrecta.')
-            return redirect(url_for('change_pwd'))
-        if request.form['newPwd'] != request.form['confirmPwd']:
-            flash('La nueva contraseña y su confirmación no coinciden.')
-            return redirect(url_for('change_pwd'))
-        organizer.pwd = generate_password_hash(request.form['newPwd'])
-        organizer.save()
-        flash('Cambio de contraseña exitoso.')
-        return redirect(url_for("profile"))
-    return render_template("change_pwd.html")
-
-
 @app.route("/shows", methods=['GET'], strict_slashes=False)
 def shows():
+    # gets all shows using the function json_shows
+    # and finally returns  ajson with status code http 200
     shows = storage.session.query(Show).all()
     listShows = json_shows(shows)
     return jsonify(listShows), 200
@@ -223,6 +194,10 @@ def shows():
 
 @app.route("/", methods=["GET"])
 def index():
+    # this function gets the shows of the next month and
+    # if the method http is GET returns a json wiht these shows
+    # and a status code http 200, otherwise returns a json with
+    # status: "method not allowed" and code http 405
     if request.method == "GET":
         all_shows = storage.session.query(Show).all()
         filter_shows = filter_by_date(all_shows, "Próximo mes")
@@ -233,8 +208,14 @@ def index():
 
 @app.route('/create-show', methods=['POST'])
 def create_show():
+    # This function takes the information
+    # of the show. venue, artist and then
+    # do a request wiht the cookie of the userId and
+    # finally we create each object associated with this cookie or
+    # organizer id, and all this if the request method is equal to POST
     if request.method == 'POST':
-        show_attributes = ["description_show", "price_ticket", "name_show", "hour", "date"]
+        show_attributes = ["description_show",
+                           "price_ticket", "name_show", "hour", "date"]
         artist_attributes = ["genre_artist", "artist_name"]
         venue_attributes = ["venue_name", "address", "city", "description"]
         show_data = {}
@@ -247,10 +228,12 @@ def create_show():
             if key in artist_attributes:
                 artist_data[key] = value
             if key in venue_attributes:
-                 venue_data[key] = value
+                venue_data[key] = value
         user_id = request.cookies.get('userID')
-        organizer = storage.session.query(Organizer).filter_by(id=user_id).first()
-        city = storage.session.query(City).filter_by(city_name=venue_data["city"]).first()
+        organizer = storage.session.query(
+            Organizer).filter_by(id=user_id).first()
+        city = storage.session.query(City).filter_by(
+            city_name=venue_data["city"]).first()
         venue_data["city_id"] = city.id
         del venue_data["city"]
         venue = organizer.create_venue(venue_data)
@@ -274,4 +257,7 @@ def create_show():
 
 
 if __name__ == "__main__":
+    # app.run() is a method that allows start
+    # our development server in the port: 5000
+    # and host: *
     app.run(host="0.0.0.0", port=5000, debug=True)

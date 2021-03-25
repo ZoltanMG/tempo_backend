@@ -161,16 +161,16 @@ Distributed under the GCP License. See `LICENSE` for more information.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/ZoltanMG/Tempo.svg?style=for-the-badge
-[contributors-url]: https://github.com/ZoltanMG/Tempo/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/ZoltanMG/Tempo.svg?style=for-the-badge
-[forks-url]: https://github.com/ZoltanMG/Tempo/network/members
-[stars-shield]: https://img.shields.io/github/stars/ZoltanMG/Tempo.svg?style=for-the-badge
-[stars-url]: https://github.com/ZoltanMG/Tempo/stargazers
-[issues-shield]: https://img.shields.io/github/issues/ZoltanMG/Tempo.svg?style=for-the-badge
-[issues-url]: https://github.com/ZoltanMG/Tempo/issues
-[license-shield]: https://img.shields.io/github/license/ZoltanMG/Tempo.svg?style=for-the-badge
-[license-url]: https://github.com/ZoltanMG/Tempo/blob/main/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors/ZoltanMG/tempo_backend.svg?style=for-the-badge
+[contributors-url]: https://github.com/ZoltanMG/tempo_backend/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/ZoltanMG/tempo_backend.svg?style=for-the-badge
+[forks-url]: https://github.com/ZoltanMG/tempo_backend/network/members
+[stars-shield]: https://img.shields.io/github/stars/ZoltanMG/tempo_backend.svg?style=for-the-badge
+[stars-url]: https://github.com/ZoltanMG/tempo_backend/stargazers
+[issues-shield]: https://img.shields.io/github/issues/ZoltanMG/tempo_backend.svg?style=for-the-badge
+[issues-url]: https://github.com/ZoltanMG/tempo_backend/issues
+[license-shield]: https://img.shields.io/github/license/ZoltanMG/tempo_backend.svg?style=for-the-badge
+[license-url]: https://github.com/ZoltanMG/tempo_backend/blob/main/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/daniela-morales-89049b199/
 [product-screenshot]: https://i.ibb.co/zQVvNq8/IMAGEN-TEMPO-DEMO.png

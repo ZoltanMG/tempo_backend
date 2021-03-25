@@ -10,7 +10,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/ZoltanMG/Tempo">
+  <a href="https://github.com/ZoltanMG/tempo_backend">
     <img src="https://i.ibb.co/pvQrdk6/LOGO-TEMPO.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -19,14 +19,14 @@
   <p align="center">
     Encuentra shows a tempo
     <br />
-    <a href="https://github.com/ZoltanMG/Tempo"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/ZoltanMG/tempo_backend"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/ZoltanMG/Tempo">View Demo</a>
+    <a href="https://github.com/ZoltanMG/tempo_backend">View Demo</a>
     ·
-    <a href="https://github.com/ZoltanMG/Tempo/issues">Report Bug</a>
+    <a href="https://github.com/ZoltanMG/tempo_backend/issues">Report Bug</a>
     ·
-    <a href="https://github.com/ZoltanMG/Tempo/issues">Request Feature</a>
+    <a href="https://github.com/ZoltanMG/tempo_backend/issues">Request Feature</a>
   </p>
 </p>
 
@@ -182,7 +182,7 @@ Distributed under the GCP License. See `LICENSE` for more information.
 - Daniela Morales    <a href="https://twitter.com/Daniela10716033"><img src="https://img.icons8.com/fluent/48/000000/twitter.png" width="20px"></a> &nbsp; <a href="https://www.linkedin.com/in/daniela-morales-89049b199/"><img src="https://img.icons8.com/fluent/20/000000/linkedin.png"></a> &nbsp; <a href="https://github.com/daniela2001-png"><img src="https://img.icons8.com/fluent/20/000000/github.png"></a>
 - Zoltan Mora   <a href="https://twitter.com/MgZoltan"><img src="https://img.icons8.com/fluent/48/000000/twitter.png" width="20px"></a> &nbsp;  <a href="www.linkedin.com/in/zoltan-mg"><img src="https://img.icons8.com/fluent/20/000000/linkedin.png"></a> &nbsp; <a href="https://github.com/ZoltanMG"><img src="https://img.icons8.com/fluent/20/000000/github.png"/></a>
 - Danilo Romero   <a href="https://twitter.com/terpenoide"><img src="https://img.icons8.com/fluent/48/000000/twitter.png" width="20px"></a> &nbsp;  <a href="https://www.linkedin.com/in/danilo-romero-beltran/"><img src="https://img.icons8.com/fluent/20/000000/linkedin.png"></a> &nbsp; <a href="https://github.com/daniloromero"><img src="https://img.icons8.com/fluent/20/000000/github.png"></a>
-- Santiago Trujillo  <a href="https://twitter.com/thiago9623"><img src="https://img.icons8.com/fluent/48/000000/twitter.png" width="20px"></a> &nbsp;  <a href="LINKDEIN"><img src="https://img.icons8.com/fluent/20/000000/linkedin.png"></a> &nbsp; <a href="GITHUB"><img src="https://img.icons8.com/fluent/20/000000/github.png"/></a>
+- Santiago Trujillo  <a href="https://twitter.com/thiago9623"><img src="https://img.icons8.com/fluent/48/000000/twitter.png" width="20px"></a> &nbsp;  <a href="https://www.linkedin.com/in/thiago1623/"><img src="https://img.icons8.com/fluent/20/000000/linkedin.png"></a> &nbsp; <a href="GITHUB"><img src="https://img.icons8.com/fluent/20/000000/github.png"/></a>
 - Camilo Torres   <a href="TWITTER"><img src="https://img.icons8.com/fluent/48/000000/twitter.png" width="20px"></a> &nbsp;  <a href="LINKDEIN"><img src="https://img.icons8.com/fluent/20/000000/linkedin.png"></a> &nbsp; <a href="GITHUB"><img src="https://img.icons8.com/fluent/20/000000/github.png"/></a>
 
 ------------
